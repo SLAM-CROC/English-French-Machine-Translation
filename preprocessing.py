@@ -6,6 +6,28 @@ import preprocessingUtil
 import random
 
 
+def preprocessing(file_path, nrows):
+    df = pd.read_csv(file_path, nrows=nrows)
+    lines = df.values.tolist()
+    print("The number of English-French sentences pairs:", len(lines))
+    pairs = [[preprocessingUtil.normalizeString(str(s)) for s in l] for l in lines]
+    MAX_LENGTH = 100
+    pairs = preprocessingUtil.filterPairs(pairs, MAX_LENGTH)
+    lang1 = df.columns.tolist()[0]
+    lang2 = df.columns.tolist()[1]
+
+    input_lang = Lang(lang1)
+    output_lang = Lang(lang2)
+
+    for pair in pairs:
+        input_lang.addSentence(pair[0])
+        output_lang.addSentence(pair[1])
+
+    print(random.choice(pairs))  # random choice of pairs
+
+    return input_lang, output_lang, pairs
+
+
 if __name__ == "__main__":
 
     # full dataset not taking load
